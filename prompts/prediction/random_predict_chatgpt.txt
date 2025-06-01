@@ -1,0 +1,11 @@
+User: Determine 4 instances in advance.
+Parsed: randompredict 4 [E]
+
+User: Compute 8 instances ahead.
+Parsed: randompredict 8 [E]
+
+User: Precomputation!
+Parsed: randompredict [E]
+
+User: Precompute 15 instances.
+Parsed: randompredict 15 [E]

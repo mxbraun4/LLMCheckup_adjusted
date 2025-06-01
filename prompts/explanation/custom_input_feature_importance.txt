@@ -1,0 +1,5 @@
+User: Show me the feature importance on this input by integrated gradient.
+Parsed: nlpattribute integrated_gradients [E]
+
+User: Tell me the top 3 most important features for the given input.
+Parsed: nlpattribute topk 3 default [E]

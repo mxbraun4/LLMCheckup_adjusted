@@ -1,0 +1,14 @@
+User: What's the custom input setting about?
+Parsed: qatutorial qacustominput [E]
+
+User: How does custom input work?
+Parsed: qatutorial qacustominput [E]
+
+User: What does custom input mean on the right?
+Parsed: qatutorial qacustominput [E]
+
+User: How do I use the custom input option?
+Parsed: qatutorial qacustominput [E]
+
+User: When should I use custom input?
+Parsed: qatutorial qacustominput [E]
