@@ -27,6 +27,7 @@ from logic.constants import operations_with_id, deictic_words, confirm, disconfi
     user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations, qatutorial
 
 from parsing.multi_prompt.prompting_parser import MultiPromptParser
+from parsing.multi_prompt_plus.prompting_parser import MultiPromptParser as MultiPromptPlusParser
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -58,6 +59,7 @@ class ExplainBot:
                  skip_prompts: bool = False,
                  suggestions: bool = False,
                  use_multi_prompt: bool = False,
+                 use_mp_plus: bool = False,
                  ):
         """The init routine.
 
@@ -84,7 +86,8 @@ class ExplainBot:
             skip_prompts: Whether to skip prompt generation. This is mostly useful for running fine-tuned
                           models where generating prompts is not necessary.
             suggestions: Whether we suggest similar operations to the user.
-            use_multi_prompt: Whether we use a multi-prompt approach for parsing the user input
+            use_multi_prompt: Whether we use the original multi-prompt approach for parsing the user input
+            use_mp_plus: Whether we use the improved MP+ parser
         """
         super(ExplainBot, self).__init__()
         # Set seeds
@@ -148,9 +151,21 @@ class ExplainBot:
 
         # Add multi-prompt parser (if needed)
         self.use_multi_prompt = use_multi_prompt
-        if self.use_multi_prompt:
-            self.mprompt_parser = MultiPromptParser(self.decoder.gpt_model, self.decoder.gpt_tokenizer, self.st_model,
-                                                    self.device)
+        self.use_mp_plus = use_mp_plus
+        if self.use_mp_plus:
+            self.mprompt_parser = MultiPromptPlusParser(
+                self.decoder.gpt_model,
+                self.decoder.gpt_tokenizer,
+                self.st_model,
+                self.device,
+            )
+        elif self.use_multi_prompt:
+            self.mprompt_parser = MultiPromptParser(
+                self.decoder.gpt_model,
+                self.decoder.gpt_tokenizer,
+                self.st_model,
+                self.device,
+            )
         else:
             self.mprompt_parser = None
 
@@ -393,7 +408,7 @@ class ExplainBot:
         else:
             grammar, prompted_text = self.compute_grammar(text, error_analysis=error_analysis)
         app.logger.info("About to decode")
-        if self.use_multi_prompt:
+        if self.mprompt_parser is not None:
             parsed_text = self.mprompt_parser.parse_user_input(text)
             parse_tree = None
         else:
