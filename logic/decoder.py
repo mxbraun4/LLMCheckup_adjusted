@@ -3,7 +3,14 @@
 This class 'decodes' natural language inputs into the grammar.
 """
 import gin
-from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig, GPTNeoXForCausalLM
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    GPTQConfig,
+    GPTNeoXForCausalLM,
+    BioGptForCausalLM,
+    BioGptTokenizer,
+)
 from petals import AutoDistributedModelForCausalLM
 from timeout import timeout, TimeoutError
 
@@ -92,6 +99,24 @@ class Decoder:
                                                                           load_in_4bit=load_in_4bits)
                 else:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
+                self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
+                self.gpt_parser_initialized = True
+
+            from parsing.gpt.few_shot_inference import get_few_shot_predict_f
+            predict_f = get_few_shot_predict_f(model=self.gpt_model,
+                                               tokenizer=self.gpt_tokenizer,
+                                               use_guided_decoding=self.use_guided_dec)
+
+            def complete(prompt, grammar):
+                return predict_f(text=prompt, grammar=grammar)
+        elif "BioGPT" in parsing_model_name or "biogpt" in parsing_model_name:
+            """BioGPT models"""
+            if not self.gpt_parser_initialized:
+                self.gpt_tokenizer = BioGptTokenizer.from_pretrained(parsing_model_name)
+                if load_in_4bits:
+                    self.gpt_model = BioGptForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0', load_in_4bit=load_in_4bits)
+                else:
+                    self.gpt_model = BioGptForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
                 self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
                 self.gpt_parser_initialized = True
 
