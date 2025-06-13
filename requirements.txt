@@ -291,3 +291,4 @@ twilio==7.8.0
 wandb==0.13.2
 word2number==1.1
 wordninja==2.0.0
+thefuzz==0.22.1

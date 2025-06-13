@@ -12,7 +12,8 @@ ExplainBot.seed = 0
 ExplainBot.dataset_file_path = "./data/medical_dialogue_dataset.csv"
 ExplainBot.load_in_4bits = True
 
-ExplainBot.use_multi_prompt = True
+ExplainBot.use_multi_prompt = False
+ExplainBot.use_mp_plus = True
 
 ExplainBot.name = "MEDICAL_DIALOGUE"
 

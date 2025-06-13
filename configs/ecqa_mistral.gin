@@ -12,7 +12,8 @@ ExplainBot.seed = 0
 ExplainBot.dataset_file_path = "./data/ECQA_dataset.csv"
 ExplainBot.load_in_4bits = False
 
-ExplainBot.use_multi_prompt = True
+ExplainBot.use_multi_prompt = False
+ExplainBot.use_mp_plus = True
 
 ExplainBot.name = "ECQA"
 
