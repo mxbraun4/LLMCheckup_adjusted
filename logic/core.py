@@ -51,6 +51,7 @@ class ExplainBot:
                  text_fields: list[str],
                  parsing_model_name: str,
                  load_in_4bits: bool,
+                 prediction_model_name: str = None,
                  seed: int = 0,
                  prompt_metric: str = "cosine",
                  prompt_ordering: str = "ascending",
@@ -79,6 +80,8 @@ class ExplainBot:
             name: The dataset name
             parsing_model_name: The name of the parsing model. See decoder.py for more details about
                                 the allowed models.
+            prediction_model_name: The model used for prediction operations. If None, defaults to
+                                the parsing model.
             seed: The seed
             prompt_metric: The metric used to compute the nearest neighbor prompts. The supported options
                            are cosine, euclidean, and random
@@ -112,6 +115,17 @@ class ExplainBot:
         self.decoder = Decoder(parsing_model_name, load_in_4bits,
                                use_guided_decoding=self.use_guided_decoding, dataset_name=name)
 
+        if prediction_model_name is None or prediction_model_name == parsing_model_name:
+            self.prediction_decoder = self.decoder
+        else:
+            app.logger.info(f"Loading prediction model {prediction_model_name}...")
+            self.prediction_decoder = Decoder(
+                prediction_model_name,
+                load_in_4bits,
+                use_guided_decoding=self.use_guided_decoding,
+                dataset_name=name,
+            )
+
         # Initialize parser + prompts as None
         # These are done when the dataset is loaded
         self.prompts = None
@@ -128,10 +142,13 @@ class ExplainBot:
         self.dialogue_flow_map = dialogue_flow_map
 
         # Set up the conversation object
-        self.conversation = Conversation(eval_file_path=dataset_file_path,
-                                         feature_definitions=feature_definitions,
-                                         decoder=self.decoder,
-                                         text_fields=self.text_fields)
+        self.conversation = Conversation(
+            eval_file_path=dataset_file_path,
+            feature_definitions=feature_definitions,
+            decoder=self.decoder,
+            text_fields=self.text_fields,
+        )
+        self.conversation.prediction_decoder = self.prediction_decoder
 
         # Load the dataset into the conversation
         self.load_dataset(dataset_file_path,
