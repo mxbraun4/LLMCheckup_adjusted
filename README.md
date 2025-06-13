@@ -51,24 +51,16 @@ python flask_app.py
 - Counterfactual Generation
 
 ## 🤗Models:
-In our study, we identified three LLMs for our purposes.
+In our study, we identified several LLMs for our purposes.
 
 - 🦙LLama2 (Request access to its weights at the ♾️ Meta AI website)
   - Quantized Llama2 (https://huggingface.co/TheBloke/Llama-2-7B-Chat-GPTQ)
 - Mistral (https://huggingface.co/mistralai/Mistral-7B-v0.1)
   - Quantized Mistral (https://huggingface.co/TheBloke/Mistral-7B-v0.1-GPTQ)
 - Stable Beluga 2 (finetuned llama2-70B) (https://huggingface.co/petals-team/StableBeluga2)
- 
- - BioGPT-Large (https://huggingface.co/microsoft/biogpt-large) *(prediction only)*
+- DeBERTa-v3-large (https://huggingface.co/microsoft/deberta-v3-large) *(prediction only)*
 
-To use BioGPT-Large just for prediction while keeping Mistral for all other
-functions, point `GlobalArgs.config` in `global_config.gin` to
-`./configs/pubmedqa_biogpt.gin`.
-=======
-- BioGPT-Large (https://huggingface.co/microsoft/biogpt-large)
-
-To enable BioGPT-Large for prediction, point `GlobalArgs.config` in
-`global_config.gin` to `./configs/pubmedqa_biogpt.gin`.
+The default configuration uses DeBERTa-v3-large located at `E:/models/deberta-v3-large` to answer questions from the BioASQ dataset. If you wish to use a different model or path, update `GlobalArgs.config` in `global_config.gin`.
 
 ### 🐳Deployment:
 We support different methods for deployment:
@@ -104,6 +96,19 @@ Link: https://github.com/asaakyan/covidfact
     Claim: ...,
     Evidence: ...,
     Label: ...,
+}
+```
+
+### Biomedical Question Answering
+Dataset: BioASQ
+
+Link: https://bioasq.org/
+
+```
+{
+    Question: ...,
+    Context: ...,
+    Answer: ...,
 }
 ```
 

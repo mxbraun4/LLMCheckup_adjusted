@@ -1,0 +1,48 @@
+##########################################
+# The BioASQ dataset conversation config
+##########################################
+
+ExplainBot.parsing_model_name = "/E/models/Mistral-7B-Instruct"
+ExplainBot.prediction_model_name = "E:/models/deberta-v3-large"
+
+# set skip_prompts to true for quicker startup for finetuned models
+# make sure to set to false using few-shot models
+ExplainBot.skip_prompts = False
+ExplainBot.text_fields = ["question", "context"]
+ExplainBot.seed = 0
+ExplainBot.dataset_file_path = "./data/BIOASQ_dataset.csv"
+ExplainBot.load_in_4bits = False
+
+ExplainBot.use_multi_prompt = False
+ExplainBot.use_mp_plus = True
+
+ExplainBot.name = "BIOASQ"
+
+ExplainBot.dataset_index_column = "idx"
+ExplainBot.target_variable_name = "labels"
+ExplainBot.categorical_features = None
+ExplainBot.numerical_features = None
+ExplainBot.remove_underscores = False
+
+ExplainBot.prompt_metric = "cosine"
+ExplainBot.prompt_ordering = "ascending"
+ExplainBot.suggestions = True
+
+# Prompt params
+Prompts.prompt_cache_size = 1_000_000
+Prompts.prompt_cache_location = "./cache/bioasq-prompts.pkl"
+Prompts.max_values_per_feature = 2
+Prompts.sentence_transformer_model_name = "all-MiniLM-L6-v2"
+Prompts.prompt_folder = "./prompts"
+Prompts.num_per_knn_prompt_template = 1
+Prompts.num_prompt_template = 7
+
+# Conversation params
+Conversation.class_names = {0: "no", 1: "yes", 2: "maybe"}
+
+# Dataset description
+DatasetDescription.dataset_objective = "answer biomedical questions with the BioASQ dataset"
+DatasetDescription.dataset_description = "BioASQ: Biomedical question answering from curated documents"
+DatasetDescription.model_description = "DeBERTa-v3-large"
+
+DatasetDescription.name = "bioasq"
