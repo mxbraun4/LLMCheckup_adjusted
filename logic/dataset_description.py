@@ -66,8 +66,11 @@ class DatasetDescription:
 
     def get_text_description(self):
         """Returns a brief text overview of the dataset and model."""
-        text = (f"This chat interfaces to a model trained on a {self.get_dataset_description()}"
-                f" dataset. The goal of the model is to {self.get_dataset_objective()}.")
+        text = (
+            f"This chat interfaces to a model trained on a {self.get_dataset_description()}"
+            f" dataset. The goal of the model is to {self.get_dataset_objective()}. "
+            f"It uses {self.get_model_description()} for predictions."
+        )
         return text
 
     @staticmethod

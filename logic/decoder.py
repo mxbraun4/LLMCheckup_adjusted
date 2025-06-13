@@ -6,12 +6,14 @@ import gin
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
+    AutoModelForSequenceClassification,
     GPTQConfig,
     GPTNeoXForCausalLM,
     BioGptForCausalLM,
     BioGptTokenizer,
 )
 from petals import AutoDistributedModelForCausalLM
+import torch
 from timeout import timeout, TimeoutError
 
 
@@ -146,6 +148,18 @@ class Decoder:
 
             def complete(prompt, grammar):
                 return predict_f(text=prompt, grammar=grammar)
+        elif "deberta" in parsing_model_name.lower():
+            if not self.gpt_parser_initialized:
+                self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
+                self.gpt_model = AutoModelForSequenceClassification.from_pretrained(parsing_model_name, device_map="auto")
+                self.gpt_parser_initialized = True
+
+            def complete(prompt, _):
+                inputs = self.gpt_tokenizer(prompt, return_tensors="pt").to(self.gpt_model.device)
+                with torch.no_grad():
+                    logits = self.gpt_model(**inputs).logits
+                prediction = torch.argmax(logits, dim=-1).item()
+                return {"generation": str(prediction)}
         elif parsing_model_name == "nearest-neighbor":
             def complete(prompt, _):
                 split_prompts = prompt.split("\n")
