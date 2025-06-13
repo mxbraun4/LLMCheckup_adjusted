@@ -23,7 +23,7 @@ from logic.parser import Parser, get_parse_tree
 from logic.prompts import Prompts
 from logic.utils import read_and_format_data, get_user_questions_and_parsed_texts
 from logic.write_to_log import log_dialogue_input
-from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map, \
+from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, greeting, dialogue_flow_map, \
     user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations, qatutorial
 
 from parsing.multi_prompt.prompting_parser import MultiPromptParser
@@ -158,9 +158,10 @@ class ExplainBot:
         self.confirm = self.st_model.encode(confirm, convert_to_tensor=True)
         self.disconfirm = self.st_model.encode(disconfirm, convert_to_tensor=True)
 
-        # Compute embeddings for thanks/bye
+        # Compute embeddings for thanks/bye/greeting
         self.thanks = self.st_model.encode(thanks, convert_to_tensor=True)
         self.bye = self.st_model.encode(bye, convert_to_tensor=True)
+        self.greeting = self.st_model.encode(greeting, convert_to_tensor=True)
 
         self.user_questions, self.parsed_texts = get_user_questions_and_parsed_texts()
 
@@ -317,9 +318,14 @@ class ExplainBot:
         text = self.st_model.encode(text, convert_to_tensor=True)
         thanks_scores = util.cos_sim(text, self.thanks)
         bye_scores = util.cos_sim(text, self.bye)
+        greeting_scores = util.cos_sim(text, self.greeting)
         max_thanks_score = torch.max(thanks_scores)
         max_bye_score = torch.max(bye_scores)
-        if max_thanks_score > max_bye_score and max_thanks_score > 0.5:
+        max_greeting_score = torch.max(greeting_scores)
+
+        if max_greeting_score > max_thanks_score and max_greeting_score > max_bye_score and max_greeting_score > 0.5:
+            return "greeting"
+        elif max_thanks_score > max_bye_score and max_thanks_score > 0.5:
             return "thanks"
         elif max_bye_score > 0.5:
             return "bye"
