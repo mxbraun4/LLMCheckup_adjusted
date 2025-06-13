@@ -125,10 +125,9 @@ class Conversation:
 
     def get_feature_definition(self, feature_name):
         """Gets semantic feature definition."""
-        if feature_name not in self.feature_definitions or self.feature_definitions is None:
+        if self.feature_definitions is None or feature_name not in self.feature_definitions:
             return None
-        else:
-            return self.feature_definitions[feature_name]
+        return self.feature_definitions[feature_name]
 
     def get_class_name_from_label(self, label: int):
         """Gets the class name from label."""
