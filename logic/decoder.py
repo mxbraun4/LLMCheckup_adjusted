@@ -5,6 +5,7 @@ This class 'decodes' natural language inputs into the grammar.
 import gin
 from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig, GPTNeoXForCausalLM
 from petals import AutoDistributedModelForCausalLM
+from timeout import timeout, TimeoutError
 
 
 @gin.configurable
@@ -137,5 +138,12 @@ class Decoder:
     def complete(self, prompt: str, grammar: str = None):
         """Run a completion."""
         assert self.gen_completions is not None, "Must run init_model first!"
-        completed = self.gen_completions(prompt, grammar)
-        return completed
+        try:
+            @timeout(30)  # 30 second timeout for model generation
+            def run_completion():
+                return self.gen_completions(prompt, grammar)
+            
+            completed = run_completion()
+            return completed
+        except TimeoutError:
+            raise TimeoutError("Model generation took too long and was cancelled. Please try again with a different prompt.")

@@ -1,0 +1,5 @@
+# ── keep the build context tiny ─────────
+models/
+*.bin
+*.pt
+*.safetensors

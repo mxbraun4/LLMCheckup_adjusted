@@ -1,0 +1,46 @@
+##########################################
+# The Medical Dialogue dataset conversation config
+##########################################
+
+ExplainBot.parsing_model_name = "/E/models/Mistral-7B-Instruct"
+
+# set skip_prompts to true for quicker startup for finetuned models
+# make sure to set to false using few-shot models
+ExplainBot.skip_prompts = False
+ExplainBot.text_fields = ["patient_message", "doctor_response"]
+ExplainBot.seed = 0
+ExplainBot.dataset_file_path = "./data/medical_dialogue_dataset.csv"
+ExplainBot.load_in_4bits = True
+
+ExplainBot.use_multi_prompt = True
+
+ExplainBot.name = "MEDICAL_DIALOGUE"
+
+ExplainBot.dataset_index_column = "idx"
+ExplainBot.target_variable_name = "response_quality"
+ExplainBot.categorical_features = None
+ExplainBot.numerical_features = None
+ExplainBot.remove_underscores = False
+
+ExplainBot.prompt_metric = "cosine"
+ExplainBot.prompt_ordering = "ascending"
+ExplainBot.suggestions = True
+
+# Prompt params
+Prompts.prompt_cache_size = 1_000_000
+Prompts.prompt_cache_location = "./cache/medical-dialogue-prompts.pkl"
+Prompts.max_values_per_feature = 2
+Prompts.sentence_transformer_model_name = "all-mpnet-base-v2"
+Prompts.prompt_folder = "./prompts"
+Prompts.num_per_knn_prompt_template = 1
+Prompts.num_prompt_template = 7
+
+# Conversation params
+Conversation.class_names = {0: "poor_response", 1: "good_response", 2: "excellent_response"}
+
+# Dataset description
+DatasetDescription.dataset_objective = "understand and generate medically-informed dialogue responses"
+DatasetDescription.dataset_description = "Medical dialogue conversations between patients and doctors"
+DatasetDescription.model_description = "Mistral-7B-v0.1-Instruct"
+
+DatasetDescription.name = "medical_dialogue" 
