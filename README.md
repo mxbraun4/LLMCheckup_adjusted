@@ -58,6 +58,10 @@ In our study, we identified three LLMs for our purposes.
 - Mistral (https://huggingface.co/mistralai/Mistral-7B-v0.1)
   - Quantized Mistral (https://huggingface.co/TheBloke/Mistral-7B-v0.1-GPTQ)
 - Stable Beluga 2 (finetuned llama2-70B) (https://huggingface.co/petals-team/StableBeluga2)
+- BioGPT-Large (https://huggingface.co/microsoft/biogpt-large)
+
+To enable BioGPT-Large for prediction, point `GlobalArgs.config` in
+`global_config.gin` to `./configs/pubmedqa_biogpt.gin`.
 
 ### 🐳Deployment:
 We support different methods for deployment:
