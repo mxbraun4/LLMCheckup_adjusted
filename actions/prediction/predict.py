@@ -72,8 +72,9 @@ def get_prediction_by_prompt(prompt_template, conversation, choice=None):
     :param conversation: conversation object
     :return: single prediction
     """
-    tokenizer = conversation.decoder.gpt_tokenizer
-    model = conversation.decoder.gpt_model
+    pred_decoder = getattr(conversation, "prediction_decoder", conversation.decoder)
+    tokenizer = pred_decoder.gpt_tokenizer
+    model = pred_decoder.gpt_model
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
 
@@ -88,7 +89,7 @@ def get_prediction_by_prompt(prompt_template, conversation, choice=None):
                                          pad_token_id=model.config.pad_token_id,
                                          eos_token_id=parser.eos_token, device=model.device.type)
 
-    decoder_name = conversation.decoder.parser_name
+    decoder_name = pred_decoder.parser_name
     if "falcon" in decoder_name or "pythia" in decoder_name:
         prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" [e]")[0].split(" ")[1]
     else:
