@@ -164,7 +164,7 @@ class ExplainBot:
         self.user_text = None
 
         self.device = 0 if torch.cuda.is_available() else -1
-        self.st_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.st_model = SentenceTransformer("pritamdeka/S-PubMedBert-MS-MARCO")
 
         # Add multi-prompt parser (if needed)
         self.use_multi_prompt = use_multi_prompt

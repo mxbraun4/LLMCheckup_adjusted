@@ -284,7 +284,7 @@ if __name__ == "__main__":
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     # loading SBERT
-    st_model = SentenceTransformer("all-MiniLM-L6-v2")
+    st_model = SentenceTransformer("pritamdeka/S-PubMedBert-MS-MARCO")
     device = "cuda"
     # initializing the multi-prompt parsing model
     parser = MultiPromptParser(decoder_model, tokenizer, st_model, device)
